@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Lab12026pApplication<lab12026p>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.udea.lab12026p.Lab12026pApplication",
+            "projectName": "lab12026p",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
