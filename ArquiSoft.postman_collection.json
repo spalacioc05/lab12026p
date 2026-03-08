@@ -1,0 +1,155 @@
+{
+  "info": {
+    "_postman_id": "11c4c364-4997-4616-9002-d0ea9c35f187",
+    "name": "ArquiSoft",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49306792",
+    "_collection_link": "https://go.postman.co/collection/49306792-11c4c364-4997-4616-9002-d0ea9c35f187?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Crear cliente",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"firstName\": \"Laura\",\r\n  \"lastName\": \"Martinez\",\r\n  \"accountNumber\": \"ACC1004\",\r\n  \"balance\": 800000.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/customers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar clientes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar cliente por id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar cliente por número de cuenta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers/account/ACC1001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "account",
+            "ACC1001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Hacer transferencia",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"senderAccountNumber\": \"ACC1001\",\r\n  \"receiverAccountNumber\": \"ACC1002\",\r\n  \"amount\": 250000.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/transactions/transfer",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "transactions",
+            "transfer"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ver historial por cuenta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/transactions/account/ACC1001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "transactions",
+            "account",
+            "ACC1001"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
