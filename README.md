@@ -69,7 +69,7 @@ El frontend se encarga de:
 
 MySQL almacena clientes y transacciones, garantizando persistencia de saldos y trazabilidad de operaciones.
 
-### 3.4 Diagrama de arquitectura (Mermaid)
+### 3.4 Diagrama de arquitectura
 
 ```mermaid
 flowchart LR
