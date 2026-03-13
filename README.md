@@ -42,13 +42,18 @@ El sistema permite registrar clientes, consultar información por número de cue
 
 ### Frontend
 
-- Aplicación SPA construida con React y Vite.
-- Navegación con React Router entre módulos de clientes, transferencias e histórico.
-- Consumo del backend mediante Axios.
-- Interfaz con componentes reutilizables, tablas, formularios, estados de carga y notificaciones visuales.
-- Configuración del backend vía variable `VITE_API_BASE_URL`, con valor por defecto `http://localhost:8080`.
+El frontend se encarga de:
 
-## Arquitectura de conexión
+- Navegacion y experiencia de usuario.
+- Formularios y validaciones visuales.
+- Consumo de servicios HTTP.
+- Visualizacion de tablas, cards, estados de carga/error y notificaciones.
+
+### 3.3 Rol de MySQL
+
+MySQL almacena clientes y transacciones, garantizando persistencia de saldos y trazabilidad de operaciones.
+
+### 3.4 Diagrama de arquitectura (Mermaid)
 
 ```mermaid
 flowchart LR
@@ -259,25 +264,136 @@ Content-Type: application/json
 }
 ```
 
-### 6. Ver historial por cuenta
+---
 
-```http
-GET http://localhost:8080/api/transactions/account/ACC1001
+## 11. Vistas del frontend
+
+### 11.1 Vista de clientes
+
+- Lista todos los clientes en tabla.
+- Muestra: ID, nombre completo, numero de cuenta y saldo.
+- Incluye busqueda por numero de cuenta.
+- Incluye creacion de cliente.
+
+### 11.2 Vista de transferencia
+
+- Formulario para transferir entre cuentas.
+- Campos: `senderAccountNumber`, `receiverAccountNumber`, `amount`.
+- Validaciones visuales y feedback con toast.
+
+### 11.3 Vista de historico de transacciones
+
+- Consulta por numero de cuenta.
+- Muestra tabla de transacciones con ID, origen, destino, monto, fecha/hora.
+- Mensaje claro cuando no hay movimientos.
+
+---
+
+## 12. Flujo de uso del sistema
+
+1. Levantar MySQL y asegurar que exista `banco2026`.
+2. Iniciar backend (`backend`, puerto `8080`).
+3. Iniciar frontend (`frontend`, puerto `5173`).
+4. Abrir la vista de clientes para verificar datos iniciales.
+5. Realizar una transferencia desde la vista de transferencias.
+6. Consultar historico por cuenta y validar que aparezca la nueva transaccion.
+
+---
+
+## 13. Pruebas recomendadas
+
+| Prueba | Accion | Resultado esperado |
+|---|---|---|
+| Listado de clientes | `GET /api/customers` o vista clientes | Tabla con clientes existentes |
+| Consulta por cuenta | Buscar `ACC1001` | Retorna solo ese cliente |
+| Transferencia valida | ACC1001 -> ACC1002 por monto permitido | Exito y registro de transaccion |
+| Saldo insuficiente | Transferir mas del saldo disponible | Error de negocio (400) |
+| Cuenta inexistente | Usar cuenta no registrada | Error de recurso (404) |
+| Historico de transacciones | Consultar por cuenta con movimientos | Lista de transacciones ordenadas |
+
+---
+
+## 14. Validaciones implementadas
+
+- No permite transferencias con saldo insuficiente.
+- No permite cuentas inexistentes.
+- No permite montos negativos o cero.
+- No permite transferir a la misma cuenta.
+- Valida campos obligatorios en requests.
+
+---
+
+## 15. Errores comunes y solucion
+
+| Problema | Causa probable | Solucion recomendada |
+|---|---|---|
+| Error de conexion a MySQL | Servicio apagado o credenciales incorrectas | Verificar MySQL activo, usuario `root`, clave `spalacioc`, DB `banco2026` |
+| Puerto 8080 ocupado | Otro servicio en uso | Cambiar `server.port` o detener proceso ocupando el puerto |
+| Puerto 5173 ocupado | Otro proyecto Vite activo | Detener proceso o ejecutar con puerto alterno |
+| Error CORS | Backend sin politica CORS correcta | Verificar `CorsConfig` para `http://localhost:5173` |
+| Dependencias faltantes frontend | `node_modules` incompleto | Ejecutar `npm install` en `frontend` |
+| Backend no inicia | Falla de build/configuracion | Ejecutar `./mvnw test` y revisar logs |
+| Frontend sin conexion a API | Base URL incorrecta | Validar `VITE_API_BASE_URL` o fallback a `http://localhost:8080` |
+
+---
+
+## 16. Recomendaciones para ejecutar sin errores
+
+- Iniciar primero MySQL, luego backend y finalmente frontend.
+- Confirmar puertos esperados: backend `8080`, frontend `5173`.
+- Evitar modificar rutas de API ya que el frontend consume rutas exactas.
+- Si cambias la URL del backend, actualizar `VITE_API_BASE_URL`.
+- Probar endpoints con Postman antes de depurar el frontend.
+
+---
+
+## 17. Mejoras opcionales futuras
+
+- Actualizar clientes (PUT).
+- Eliminar clientes (DELETE).
+- Dashboard con metricas avanzadas y graficas.
+- Autenticacion/autorizacion (JWT).
+- Paginacion y filtros avanzados.
+- Pruebas E2E y cobertura automatizada.
+
+---
+
+## 18. Conclusion
+
+Este laboratorio logra una implementacion completa de una aplicacion bancaria basica con separacion clara entre frontend, backend y base de datos. La solucion aplica arquitectura por capas, validaciones de negocio, integracion REST y una experiencia de usuario moderna, cumpliendo los objetivos academicos de Arquitectura de Software.
+
+---
+
+## 19. Autores / creditos
+
+Espacio reservado para completar:
+
+- Nombre 1
+- Nombre 2
+- Nombre 3
+
+---
+
+## Anexo A - Comandos rapidos
+
+### Levantar backend (Windows)
+
+```powershell
+cd backend
+.\mvnw.cmd test
+.\mvnw.cmd spring-boot:run
 ```
 
-## Funcionalidades principales
+### Levantar frontend
 
-- Registro de clientes con saldo inicial.
-- Consulta de clientes y búsqueda por número de cuenta.
-- Transferencias entre cuentas con validaciones de negocio.
-- Actualización de saldos de origen y destino dentro de una transacción del backend.
-- Consulta del histórico de movimientos por cuenta ordenado por fecha descendente.
-- Interfaz web para operar el sistema sin depender exclusivamente de Postman.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## Notas y recomendaciones
+### Ejecucion simultanea recomendada
 
-- Inicie primero la base de datos, luego el backend y finalmente el frontend.
-- Verifique que MySQL esté escuchando en `localhost:3306` y que la base de datos se llame `banco2026`.
-- Si cambia el puerto o dominio del frontend, actualice la configuración CORS del backend.
-- Para poblar la base de datos por primera vez, puede crear clientes desde Postman o desde la interfaz web antes de probar transferencias.
-- DBeaver puede ser útil para inspeccionar tablas, saldos y registros de transacciones durante las pruebas.
+1. Terminal A: backend.
+2. Terminal B: frontend.
+3. Abrir `http://localhost:5173`.
