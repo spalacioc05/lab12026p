@@ -127,6 +127,24 @@ Primero cree la base de datos:
 
 ```sql
 CREATE DATABASE banco2026 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS customers;
+
+CREATE TABLE customers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    account_number VARCHAR(50) NOT NULL UNIQUE,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    balance DECIMAL(15,2) NOT NULL DEFAULT 0.00
+);
+
+CREATE TABLE transactions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sender_account_number VARCHAR(50) NOT NULL,
+    receiver_account_number VARCHAR(50) NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    timestamp DATETIME NOT NULL
+);
 ```
 
 Luego puede insertar clientes de prueba como los siguientes:
