@@ -31,6 +31,15 @@ Este proyecto implementa un sistema bancario básico para el curso Arquitectura 
 
 Además de la implementación funcional del laboratorio 1, el proyecto ya incorpora parte del enfoque del laboratorio 2: pruebas automáticas con JUnit 5, validación de cobertura con JaCoCo y pipeline de integración continua con GitHub Actions.
 
+## Logros del proyecto
+
+- Backend y frontend integrados para operar un flujo bancario completo.
+- Reglas de negocio centralizadas en servicios y manejo global de errores.
+- Pruebas automáticas para servicios, controladores y endpoints auxiliares.
+- Cobertura validada con JaCoCo por encima del umbral mínimo configurado.
+- Análisis continuo con SonarCloud para calidad, cobertura y duplicación.
+- Construcción y publicación automática de imagen Docker del backend en Docker Hub desde GitHub Actions.
+
 ## Información académica
 
 | Elemento | Detalle |
@@ -61,7 +70,21 @@ flowchart LR
 | Cobertura | JaCoCo |
 | Calidad | SonarCloud |
 | CI | GitHub Actions |
-| Despliegue | Docker |
+| Despliegue | Docker, Vercel-ready para frontend |
+
+## Despliegue del frontend en Vercel
+
+El frontend quedó preparado para desplegarse en Vercel.
+
+Configuración recomendada:
+
+- Root Directory: `frontend`
+- Framework Preset: `Vite`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Variable requerida: `VITE_API_BASE_URL` con la URL pública del backend
+
+También se agregó `frontend/vercel.json` para soportar correctamente las rutas del `BrowserRouter`.
 
 ## Estructura del proyecto
 
@@ -249,6 +272,7 @@ Este workflow hace lo siguiente:
 - ejecución de `mvn verify`
 - generación del JAR del backend
 - validación de construcción de imagen Docker
+- publicación de la imagen `spalacioc05/lab12026p:latest` en Docker Hub en eventos `push`
 - publicación de artefactos de JaCoCo y Surefire
 
 ## SonarCloud
@@ -268,6 +292,10 @@ Las insignias del README ya quedaron enlazadas a este análisis.
 ## Docker y despliegue
 
 El backend ya tiene contenedor definido en [backend/Dockerfile](backend/Dockerfile).
+
+Imagen publicada por el pipeline:
+
+- `docker.io/spalacioc05/lab12026p:latest`
 
 ### Construcción local de imagen
 

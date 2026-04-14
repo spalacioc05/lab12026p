@@ -1,16 +1,43 @@
-# React + Vite
+# Frontend · lab12026p
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend del sistema bancario construido con React y Vite.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev
+npm run build
+npm run preview
+```
 
-## React Compiler
+## Variable de entorno
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+El frontend consume la API usando la variable:
 
-## Expanding the ESLint configuration
+```bash
+VITE_API_BASE_URL
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Ejemplo local:
+
+```bash
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+## Despliegue en Vercel
+
+El proyecto ya quedó listo para desplegarse en Vercel.
+
+Configuración recomendada en Vercel:
+
+- Root Directory: `frontend`
+- Framework Preset: `Vite`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+
+Variable de entorno requerida en Vercel:
+
+- `VITE_API_BASE_URL`: URL pública del backend desplegado
+
+Además, se agregó `vercel.json` para que las rutas de React Router redirijan correctamente a `index.html`.
