@@ -2,12 +2,15 @@ package com.udea.lab12026p.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.javafaker.Faker;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
+import java.util.function.Function;
 
 @RestController
 @RequestMapping("/api/faker")
@@ -36,17 +39,14 @@ public class DataController {
      */
     @GetMapping("/customers")
     public JsonNode getFakeCustomers() {
-        var faker = new Faker(new Locale("en-US"));
-        var customers = objectMapper.createArrayNode();
-        for (int i = 0; i < 10; i++) {
+        return generateCollection(faker -> {
             var finance = faker.finance();
-            customers.add(objectMapper.createObjectNode()
+            return objectMapper.createObjectNode()
                     .put("firstName", faker.name().firstName())
                     .put("lastName", faker.name().lastName())
                     .put("accountNumber", finance.iban())
-                    .put("balance", faker.number().randomDouble(2, 100, 100000)));
-        }
-        return customers;
+                    .put("balance", faker.number().randomDouble(2, 100, 100000));
+        });
     }
 
     /**
@@ -54,16 +54,11 @@ public class DataController {
      */
     @GetMapping("/transactions")
     public JsonNode getFakeTransactions() {
-        var faker = new Faker(new Locale("en-US"));
-        var transactions = objectMapper.createArrayNode();
-        for (int i = 0; i < 10; i++) {
-            transactions.add(objectMapper.createObjectNode()
+        return generateCollection(faker -> objectMapper.createObjectNode()
                     .put("senderAccount", faker.finance().iban())
                     .put("receiverAccount", faker.finance().iban())
                     .put("amount", faker.number().randomDouble(2, 10, 5000))
                     .put("timestamp", faker.date().past(30, java.util.concurrent.TimeUnit.DAYS).toString()));
-        }
-        return transactions;
     }
 
     /**
@@ -71,18 +66,15 @@ public class DataController {
      */
     @GetMapping("/cards")
     public JsonNode getFakeCards() {
-        var faker = new Faker(new Locale("en-US"));
-        var cards = objectMapper.createArrayNode();
-        for (int i = 0; i < 10; i++) {
+        return generateCollection(faker -> {
             var finance = faker.finance();
             var creditCard = faker.business();
-            cards.add(objectMapper.createObjectNode()
+            return objectMapper.createObjectNode()
                     .put("cardType", creditCard.creditCardType())
                     .put("cardNumber", creditCard.creditCardNumber())
                     .put("expiry", creditCard.creditCardExpiry())
-                    .put("iban", finance.iban()));
-        }
-        return cards;
+                    .put("iban", finance.iban());
+        });
     }
 
     /**
@@ -90,14 +82,20 @@ public class DataController {
      */
     @GetMapping("/currencies")
     public JsonNode getFakeCurrencies() {
-        var faker = new Faker(new Locale("en-US"));
-        var currencies = objectMapper.createArrayNode();
-        for (int i = 0; i < 10; i++) {
+        return generateCollection(faker -> {
             var currency = faker.currency();
-            currencies.add(objectMapper.createObjectNode()
+            return objectMapper.createObjectNode()
                     .put("name", currency.name())
-                    .put("code", currency.code()));
+                    .put("code", currency.code());
+        });
+    }
+
+    private ArrayNode generateCollection(Function<Faker, ObjectNode> itemGenerator) {
+        var faker = new Faker(new Locale("en-US"));
+        var nodes = objectMapper.createArrayNode();
+        for (int i = 0; i < 10; i++) {
+            nodes.add(itemGenerator.apply(faker));
         }
-        return currencies;
+        return nodes;
     }
 }

@@ -231,7 +231,7 @@ JaCoCo ya está integrado en [backend/pom.xml](backend/pom.xml) y ejecuta lo sig
 Estado actual medido sobre las clases relevantes incluidas en la regla:
 
 - cobertura de líneas: 93.2%
-- umbral mínimo configurado: 80%
+- umbral mínimo configurado: 90%
 
 Reporte local generado en:
 
@@ -261,6 +261,7 @@ Configuración usada:
 - project key: `spalacioc05_lab12026p`
 - secret requerido en GitHub: `SONAR_TOKEN`
 - reporte de coverage consumido por Sonar: `backend/target/site/jacoco/jacoco.xml`
+- exclusiones de Sonar alineadas con JaCoCo para evitar que DTO, entidades, repositorios, mapeadores, configuración y excepciones distorsionen la métrica de cobertura
 
 Las insignias del README ya quedaron enlazadas a este análisis.
 
