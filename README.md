@@ -1,6 +1,13 @@
 # Laboratorio 1 · Sistema Bancario de Transferencias
 
 [![Backend CI](https://github.com/spalacioc05/lab12026p/actions/workflows/build.yml/badge.svg)](https://github.com/spalacioc05/lab12026p/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=bugs)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=coverage)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=spalacioc05_lab12026p&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=spalacioc05_lab12026p)
 
 <div align="center">
 
@@ -52,7 +59,9 @@ flowchart LR
 | Frontend | React 19, Vite, Axios, React Router |
 | Pruebas | JUnit 5, Mockito, MockMvc |
 | Cobertura | JaCoCo |
+| Calidad | SonarCloud |
 | CI | GitHub Actions |
+| Despliegue | Docker |
 
 ## Estructura del proyecto
 
@@ -60,10 +69,12 @@ flowchart LR
 lab12026p/
 ├── .github/
 │   └── workflows/
-│       └── build.yml
+│       ├── build.yml
+│       └── sonar.yml
 ├── ArquiSoft.postman_collection.json
 ├── README.md
 ├── backend/
+│   ├── Dockerfile
 │   ├── mvnw
 │   ├── mvnw.cmd
 │   ├── pom.xml
@@ -236,7 +247,50 @@ Este workflow hace lo siguiente:
 - configuración de Java 17
 - caché de dependencias Maven
 - ejecución de `mvn verify`
+- generación del JAR del backend
+- validación de construcción de imagen Docker
 - publicación de artefactos de JaCoCo y Surefire
+
+## SonarCloud
+
+El proyecto ya tiene integración con SonarCloud mediante [\.github/workflows/sonar.yml](.github/workflows/sonar.yml).
+
+Configuración usada:
+
+- organización: `spalacioc05`
+- project key: `spalacioc05_lab12026p`
+- secret requerido en GitHub: `SONAR_TOKEN`
+- reporte de coverage consumido por Sonar: `backend/target/site/jacoco/jacoco.xml`
+
+Las insignias del README ya quedaron enlazadas a este análisis.
+
+## Docker y despliegue
+
+El backend ya tiene contenedor definido en [backend/Dockerfile](backend/Dockerfile).
+
+### Construcción local de imagen
+
+```powershell
+cd backend
+docker build -t lab12026p-backend .
+```
+
+### Ejecución local del contenedor
+
+```powershell
+docker run -p 8080:8080 `
+    -e SPRING_DATASOURCE_URL="jdbc:postgresql://TU_HOST:5432/postgres" `
+    -e SPRING_DATASOURCE_USERNAME="TU_USUARIO" `
+    -e SPRING_DATASOURCE_PASSWORD="TU_PASSWORD" `
+    lab12026p-backend
+```
+
+Variables de entorno soportadas por el backend:
+
+- `SERVER_PORT`
+- `SPRING_DATASOURCE_URL`
+- `SPRING_DATASOURCE_USERNAME`
+- `SPRING_DATASOURCE_PASSWORD`
 
 ## Postman
 
@@ -251,10 +305,12 @@ Ya quedó implementado en este proyecto:
 - pruebas web con MockMvc
 - coverage con JaCoCo
 - workflow de GitHub Actions
+- integración con SonarCloud
+- empaquetado JAR del backend
+- Dockerfile para despliegue
 
 Pendiente para completar más del laboratorio 2:
 
-- integración con SonarCloud
 - integración con Snyk
 - publicación más formal de métricas de calidad en el pipeline
 
