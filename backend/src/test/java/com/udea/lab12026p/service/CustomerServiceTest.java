@@ -66,6 +66,42 @@ class CustomerServiceTest {
 	}
 
 	@Test
+	void getCustomerByIdShouldReturnMappedCustomer() {
+		Customer customer = new Customer(7L, "ACC-007", "Marta", "Diaz", new BigDecimal("1800.00"));
+		CustomerDTO customerDto = new CustomerDTO(7L, "Marta", "Diaz", "ACC-007", new BigDecimal("1800.00"));
+
+		when(customerRepository.findById(7L)).thenReturn(Optional.of(customer));
+		when(customerMapper.toDTO(customer)).thenReturn(customerDto);
+
+		CustomerDTO result = customerService.getCustomerById(7L);
+
+		assertSame(customerDto, result);
+	}
+
+	@Test
+	void getCustomerByAccountNumberShouldThrowWhenCustomerDoesNotExist() {
+		when(customerRepository.findByAccountNumber("ACC-404")).thenReturn(Optional.empty());
+
+		ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+				() -> customerService.getCustomerByAccountNumber("ACC-404"));
+
+		assertEquals("Customer not found with account number: ACC-404", exception.getMessage());
+	}
+
+	@Test
+	void getCustomerByAccountNumberShouldReturnMappedCustomer() {
+		Customer customer = new Customer(8L, "ACC-008", "Sara", "Ruiz", new BigDecimal("2200.00"));
+		CustomerDTO customerDto = new CustomerDTO(8L, "Sara", "Ruiz", "ACC-008", new BigDecimal("2200.00"));
+
+		when(customerRepository.findByAccountNumber("ACC-008")).thenReturn(Optional.of(customer));
+		when(customerMapper.toDTO(customer)).thenReturn(customerDto);
+
+		CustomerDTO result = customerService.getCustomerByAccountNumber("ACC-008");
+
+		assertSame(customerDto, result);
+	}
+
+	@Test
 	void createCustomerShouldRejectDuplicatedAccountNumber() {
 		CustomerDTO customerDTO = new CustomerDTO(null, "Ana", "Lopez", "ACC-001", new BigDecimal("1000.00"));
 		when(customerRepository.existsByAccountNumber("ACC-001")).thenReturn(true);

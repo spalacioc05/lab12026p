@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,21 @@ class CustomerControllerTest {
 	private CustomerService customerService;
 
 	@Test
+	void getAllCustomersShouldReturnServiceResults() throws Exception {
+		CustomerDTO firstCustomer = new CustomerDTO(1L, "Ana", "Lopez", "ACC-001", new BigDecimal("1000.00"));
+		CustomerDTO secondCustomer = new CustomerDTO(2L, "Luis", "Perez", "ACC-002", new BigDecimal("2500.00"));
+
+		when(customerService.getAllCustomers()).thenReturn(List.of(firstCustomer, secondCustomer));
+
+		mockMvc.perform(get("/api/customers"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].id").value(1))
+				.andExpect(jsonPath("$[0].accountNumber").value("ACC-001"))
+				.andExpect(jsonPath("$[1].id").value(2))
+				.andExpect(jsonPath("$[1].accountNumber").value("ACC-002"));
+	}
+
+	@Test
 	void createCustomerShouldReturnBadRequestWhenPayloadIsInvalid() throws Exception {
 		CustomerDTO payload = new CustomerDTO(null, "", "", "", null);
 
@@ -58,6 +74,32 @@ class CustomerControllerTest {
 		mockMvc.perform(get("/api/customers/42"))
 				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.message").value("Customer not found with id: 42"));
+	}
+
+	@Test
+	void getCustomerByIdShouldReturnServiceResult() throws Exception {
+		CustomerDTO customer = new CustomerDTO(42L, "Ana", "Lopez", "ACC-042", new BigDecimal("1500.00"));
+
+		when(customerService.getCustomerById(42L)).thenReturn(customer);
+
+		mockMvc.perform(get("/api/customers/42"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(42))
+				.andExpect(jsonPath("$.accountNumber").value("ACC-042"))
+				.andExpect(jsonPath("$.firstName").value("Ana"));
+	}
+
+	@Test
+	void getCustomerByAccountNumberShouldReturnServiceResult() throws Exception {
+		CustomerDTO customer = new CustomerDTO(3L, "Laura", "Gomez", "ACC-003", new BigDecimal("900.00"));
+
+		when(customerService.getCustomerByAccountNumber("ACC-003")).thenReturn(customer);
+
+		mockMvc.perform(get("/api/customers/account/ACC-003"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(3))
+				.andExpect(jsonPath("$.accountNumber").value("ACC-003"))
+				.andExpect(jsonPath("$.firstName").value("Laura"));
 	}
 
 	@Test
