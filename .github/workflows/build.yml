@@ -51,6 +51,18 @@ jobs:
       - name: Validate Docker image build
         run: docker build -t lab12026p-backend .
 
+      - name: Build & push Docker image
+        if: github.event_name == 'push'
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: spalacioc05/lab12026p
+          tags: latest
+          registry: docker.io
+          dockerfile: backend/Dockerfile
+          directory: backend
+          username: ${{ secrets.docker_username }}
+          password: ${{ secrets.docker_password }}
+
       - name: Upload JaCoCo report
         if: always()
         uses: actions/upload-artifact@v4
